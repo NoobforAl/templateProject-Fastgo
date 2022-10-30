@@ -1,0 +1,11 @@
+.env.example
+.flake8
+.gitignore
+.github
+.git
+.env
+./test
+env
+Dokcerfile
+docker-compose.yml
+README.md

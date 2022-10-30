@@ -1,0 +1,70 @@
+version: "3"
+
+services:
+  app:
+    build: .
+    container_name: fastapi-app
+    volumes:
+      - ./:/src/:ro
+    command: uvicorn app.main:app --reload --workers 1 --host 0.0.0.0 --port 8000
+    depends_on:
+      - db-postgres
+      - mongodb
+      - redis
+    ports:
+      - 8000:8000
+    environment:
+      - DATABASE_URL=postgresql://fastapi:fastapi@db/fastapi
+      - MONGO_URI=mongodb://mongodb:mongodb@mongodb:27017/testDB
+      - REDIS_HOST=cache
+      - REDIS_PORT=6379
+      - REDIS_PASSWORD=eYVX7EwVmmxKPCDmwMtyKVge8oLd2t81
+    networks:
+      - myapp
+
+  db-postgres:
+    image: postgres:12.1-alpine
+    container_name: db-postgres
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    environment:
+      - POSTGRES_USER=fastapi
+      - POSTGRES_PASSWORD=fastapi
+      - POSTGRES_DB=fastapi
+    networks:
+      - myapp
+
+  mongodb:
+    image: mongo:latest
+    restart: always
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=root
+      - MONGO_INITDB_ROOT_PASSWORD=root
+      - MONGO_INITDB_DATABASE=testDB
+      - MONGO_INITDB_USER=mongodb
+      - MONGO_INITDB_PWD=mongodb
+    volumes:
+      - mongodb_data:/data/db
+    networks:
+      - myapp
+
+  redis:
+    image: redis
+    restart: always
+    command: redis-server --save 20 1 --loglevel warning --requirepass eYVX7EwVmmxKPCDmwMtyKVge8oLd2t81
+    volumes:
+      - cache:/data
+
+    networks:
+      - myapp
+
+volumes:
+  mongodb_data:
+    driver: local
+  postgres_data:
+    driver: local
+  cache:
+    driver: local
+
+networks:
+  myapp: null
