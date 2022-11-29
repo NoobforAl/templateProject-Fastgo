@@ -22,7 +22,6 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# atuh app
 app.include_router(auth)
 app.add_exception_handler(AuthJWTException, authjwt_ex)
 
@@ -30,5 +29,5 @@ if __name__ == "__main__":
     import uvicorn
     uvicorn.run(
         "app.main:app", host="127.0.0.1",
-        port=5050, reload=True, debug=True
+        port=5050, reload=True,
     )
