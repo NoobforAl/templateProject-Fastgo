@@ -35,4 +35,4 @@ class LogConfig(BaseModel):
 
 
 dictConfig(LogConfig().dict())
-log = logging.getLogger("SyatemLog")
+log = logging.getLogger("AppLog")
